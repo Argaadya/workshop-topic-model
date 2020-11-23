@@ -92,7 +92,7 @@ options(scipen = 999)
 This 3-days online workshop is a beginner-friendly introduction to Topic Modeling using R. By performing topic model you can  organize, understand and summarize large collections of textual information from your text data. 
 
 ```{r echo=FALSE}
-knitr::include_graphics("assets/Topic Modeling for Text Analysis.png")
+knitr::include_graphics("assets/Topic_Modeling_for_Text_Analysis.png")
 ```
 
 
@@ -517,13 +517,6 @@ head( quarter(covid_news$publish_date) )
 # use function to the data with mutate
 
 # check data structure
-```
-
-```{r special, echo=FALSE}
-covid_news <- covid_news %>% 
-  mutate(publish_month = month(publish_date, label = T),
-         publish_day = wday(publish_date, label = T)
-         )
 ```
 
 ______________________
