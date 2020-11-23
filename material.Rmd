@@ -120,7 +120,7 @@ knitr::include_graphics("assets/Topic_Modeling_for_Text_Analysis.png")
  
 # Preface
 
-Natural Language Processing (NLP) is a branch of artificial intelligence that is steadily growing both in terms of research and market values1. The ultimate objective of NLP is to read, decipher, understand, and make sense of the human languages in a manner that is valuable2. The are many applications of NLP in various industries, such as:
+Natural Language Processing (NLP) is a branch of artificial intelligence that is steadily growing both in terms of research and market values1. The ultimate objective of NLP is to read, decipher, understand, and make sense of the human languages in a manner that is valuable. The are many applications of NLP in various industries, such as:
 
 - SPAM email detection
 - Sentiment analysis
