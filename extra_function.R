@@ -24,6 +24,7 @@ topic_cloud <- function(lda, n){
     mutate(id = rownames(.),
            id = as.numeric(id)) %>% 
     pivot_longer(-id, names_to = "topic", values_to = "term") %>% 
+    mutate(topic = factor(topic, levels = paste("Topic", 1:(length(word_topic)) ))) %>% 
     ggplot(aes(label = term, size = rev(id), color = topic, alpha = rev(id))) +
     geom_text_wordcloud(seed = 123) +
     facet_wrap(~topic, scales = "free", ncol = 4) +
@@ -37,13 +38,12 @@ get_top_news <- function(lda, topic, data){
   
   doc_topic <- lda$theta %>% 
     as.data.frame() %>% 
-    mutate(id = rownames(.)) 
+    mutate(document_id = rownames(.)) 
   
   doc_topic %>% 
     arrange(
       desc( doc_topic[, paste0("t_", topic)] )
       ) %>% 
-    left_join(clean_covid, 
-              by = c("id" = "document_id")) %>% 
-    select(-id) 
+    left_join(data) %>% 
+    select(-document_id) 
 }

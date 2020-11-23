@@ -1,0 +1,225 @@
+---
+title: "Dive Deeper"
+author: "Arga"
+date: "11/23/2020"
+output: 
+  html_document:
+    highlight: zenburn
+    number_sections: yes
+    code_folding: 'hide'
+    theme: flatly
+    toc: yes
+    df_print: paged
+    toc_depth: 2
+    toc_float:
+      collapsed: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = F, warning = F)
+```
+
+# Intro
+
+You are part of the data initiative team from a reputable start up company. The company is being ambitious to implement data-driven decision making in all division, including the Human Resource (HR) Department. The department often collecting feedback and review via group discussion that is being held quarterly. However, some employee may don't want to share all information directly to HR department for several reason, such as being afraid of jduged by other or any personal reasons. To overcome this problem, the HR also want to collect feedback and review from external resource. The HR decided to collect and analyze review from an online job seeker website where former and current employee can give review and rating to the company. To transform the data into informative insight, the HR want our help to analyze is there any topic or context that is being written on the website. 
+
+# Library
+
+The following chunk is the library that you can use to do text analysis and topic modeling.
+
+```{r message=FALSE, warning=FALSE}
+# Data Wrangling
+library(dplyr) 
+library(lubridate)
+library(stringr)
+library(tidyr)
+
+# Text Analysis
+library(tidytext)
+library(textclean)
+library(SnowballC)
+library(hunspell)
+
+# Topic Modeling
+library(textmineR)
+
+# Data Visualization
+library(ggplot2)
+library(ggwordcloud)
+library(scales)
+
+# Extra Function
+source("extra_function.R")
+
+options(scipen = 999)
+```
+
+# Import Data
+
+You can import the data by reading the `workplace_review.csv` and save them as `df_review`. You can check the data structure using `glimpse()`.
+
+```{r}
+# Import data
+```
+
+Data Description:
+
+- **location**: residence of the user
+- **date**: date of the review
+- **status**: status of the user (current/former employee)
+- **job_title**: role/job title of the user as an employee
+- **summary**: summary of the review in short text
+- **overall**: overall rating given by user to the company
+- **review**: full review from the user
+
+# Data Wrangling
+
+Try to transform the data type of the `date` column. You can also try to create a new column named `review_day`, `review_month`, and `review_year` that respectively contain information about day of the week, month , and year of the review.
+
+```{r}
+# Enter your code here
+```
+
+Check the earliest and the latest date using the `range()` function to the `date` column.
+
+```{r}
+# Enter your code here
+```
+
+Some review are too old and is not relevant anymore to the current condition. We will only collect review from 2015 and later.
+
+```{r}
+# Enter your code here
+```
+
+## Employment Status
+
+You may want to check how many of the review come from current employee and how many come from former employee. Use `count()` to count the number of each employee status in the data. Describe your finding.
+
+```{r}
+# Enter your code here
+```
+
+## Top 10 Reviewer by Job Title
+
+First you may want to check the top 10 job title that give the most review on the website. This may give us insight at which employee that complain the most. Use `count()` to count the number of each job title in the data and then sort the data by usign `arrange()` and `desc()` to get descending sort (from small to big number). Describe your finding.
+
+```{r}
+# Enter your code here
+```
+
+# Text Cleansing
+
+In this part you can start doing text cleansing from the `review` column. The method and order of the cleansing process is up to you. General text cleansing process include:
+
+- Make all character into lowercase
+- Remove mention name
+- Remove certain characters
+- Removing hashtag (#rstats)
+- Removing mention (@algoritma)
+- Removing URL
+- Replace contracted word (I'm, Don't, Doesn't) into the proper format (I am, Do not, Does not)
+- Remove all punctuation 
+- Remove all numbers
+- Remove double space
+- Remove space at start and end of string
+
+```{r}
+# Enter your code here
+```
+
+## Filter Text by Word Length
+
+In this part you check the statistics and summary of the length of the review. Is there any clean review that only has one or two token/words?
+
+```{r}
+# Enter your code here
+```
+
+Since most review is quite short, you can choose minimum document length to be 10 or any number you want. Make sure that your final data is at least still have 1000 rows/observations so the model has many data to learn from.
+
+```{r}
+# Enter your code here
+```
+
+# Word Tokenization 
+
+In this part, you can start to tokenize the word on each review. Before you do tokenization, first make sure you create a column `document_id` that contain the index or identifier for each document/review.
+
+```{r}
+# Enter your code here
+```
+
+You can start doing tokenization. Use `unnest_tokens()` to do tokenization where each row will contain a single token/word.
+
+```{r}
+# Enter your code here
+```
+
+## Remove Stop Words
+
+Remove stop words from your data by using `filter`. Since the review is in english, you can use `stop_words` data from `tidytext` package to remove the stop words.
+
+```{r}
+# Enter your code here
+```
+
+## Word Stemming
+
+After removing the stop word, you also need to do word stemming where you will transform all words into its basic form, such as from "walking" to "walk". You can use `wordStem()` function to do stemming using Porter's algorithm or you can use `hunspell` stemming method using the method inside the course material.
+
+```{r message=F, warning=FALSE}
+# Enter your code here
+```
+
+# Text Visualization
+
+Before making a topic model, it would be good to first check the top 50 words from the tokenized data. First, you need to count how many word inside the data using `count()` and save it as `token_count` object. Don't forget to use `arrange()` and `desc()` to sort the data since we only want the top 50 words based on the frequency.
+
+```{r}
+# Enter your code here
+```
+
+You can create a word cloud to gain insight what is the top word that can be found easily in all reviews? Describe your finding.
+
+```{r eval=FALSE}
+# Enter your code here
+```
+
+# Topic Modeling
+
+You can continue by removing rare words, word that appear in less than *n* document. For this session we will decided to remove words that appear in less than 5 documents. We also need to remove word that appear in more than 80% of the document. To do that, you need to count how many word on each document using `count` with `document_id` and `word` column, and followed by `count` again with `word` column to get the number of words in each document. Save the object as `frequent_token`.
+
+```{r}
+# Count number of word in each document
+
+
+# Remove word that appear in 80% of all reviews
+
+# Remove word that appear in less than 5 reviews
+
+# Create custom stop word based on the frequent and rare words
+
+```
+
+Finally, you can filter frequent and rare token from your data using `filter()` and then create a sparse document-term matrix that will be used as the input for topic modeling process.
+
+```{r}
+# Enter your code here
+```
+
+## Fitting Topic Model
+
+Since review can be very broad in term of topics, we will create an LDA model with 20 topics. The sampling iterations for the model is 1000 iterations. Save/assign the model as `lda_review`.
+
+```{r}
+# Create lda model
+```
+
+## Topic Exploration and Interpretation
+
+Finally, you can start exploring the topic by visualizing the top *n* words from each topic using word cloud. You need to analyze some topics that pick your interest and describe what the topic is about and what can we do as an HR to handle the topics.
+
+```{r}
+# Topic Visualization
+```

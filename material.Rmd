@@ -17,11 +17,14 @@ output:
   pdf_document:
     toc: yes
     toc_depth: '2'
+    latex_engine: xelatex
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, fig.align = "center", message = F, warning = F, out.width = "80%")
 ```
+
+\newpage
 
 # Background {.tabset}
 ## Algoritma
@@ -211,6 +214,27 @@ This is where you can see the data and objects that has been created or imported
 
 In this panels you can see various setting. The files tab is the file manager where you can directly access the files in your directory. The plots tab is where you can see the plot you have created. The packages is where you can see the library or collection of the available packages in your local computer and the help tab is where you can search and see the documentation of each package and each function available in R.
 
+### Create Report with Rmarkdown
+
+In this course, we will be using an Rmarkdown file. It is one of the tools that has a deep integration with R Studio and its functionalityis developed within `rmarkdown` package. The package is made for easy development of dynamic document tool for R. R Markdown turn our analysis into high-quality reports.
+
+If you take alook at the original project directory, you should see there are sever files with under `.Rmd` extension, `.html` file, and `.pdf` file. The HTML and PDF are generated using R Markdown functionality: `knit`.
+
+To create an Rmarkdown file, you can go to the `File` menu on the top left screen, select `New File` and choose `R Markdown`. This will open a window where you can choose the output of the report (HTML, PDF, Word) and enter your report title and author.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/rmarkdown.png")
+```
+
+### Shortcut
+
+There are several key shortcut that will help you running command in R. Some general shortcut including:
+
+* `Alt + -`: assign/make an object in R (<-)
+* `Ctrl + Shift+ M`: create piping (%>%) symbol
+* `Ctrl + Enter`: Run single line of code
+* `Ctrl + Shift + Enter`: Run a single chunk/block of code
+
 # Introduction to R
 
 ## Import Data
@@ -221,7 +245,7 @@ We will start to learn data analysis with R by importing the data. Data can come
 covid_news <- read.csv("data/news_data.csv")
 ```
 
-The code means that we create an object named *covid_news* that contains the *news_data.csv* data from the folder *data*. To see whether you have successfully imported the data, you can check the environment panel and look for covid_news object. In environment you should also see that the covid_news is a data with 7857 observations (rows) with 6 variables (columns).
+The code means that we create an object named *covid_news* that contains the *news_data.csv* data from the folder *data*. The `<-` means that we store or create an object that can be used later. To see whether you have successfully imported the data, you can check the environment panel and look for covid_news object. In environment you should also see that the covid_news is a data with 7857 observations (rows) with 6 variables (columns).
 
 Now we are curious what is the contain of the covid_news. To check the first 10 row of the data, we can use the `head()` function. By default, `head()` function shows the first 6 observation. To see the first 10 observations, we can add argument *n = 10*. The reason to do this is that we often don't need to check all contents of the data and only see the small sample of them. Another reason is that it would take a huge power and far longer time for the computer to all contents.
 
@@ -248,7 +272,24 @@ tail(covid_news, n = 10)
 
 From the first and last 10 observations we can see that even though all news are related to Covid-19, it has many things to report such as the gay-straight alliance, the scientist attempt to study the virus, and the politics regarding the virus. Imagine if you have to check one by one all topics and discussion regarding the Covid-19 manually. That is why we need text mining to help us understand text and documents.
 
-## Data Structure
+____________________
+
+**Importing Other Data Format**
+
+In your daily work your data may not in a `.csv` format. For example, your data may be in `.txt` or `.xlsx` format. Don't worry, R also support importing data for this type, you just need to use different function.
+
+```{r eval=FALSE}
+# Read excel data (.xlsx)
+library(readxl)
+read_xlsx("your file name")
+
+# Read .txt data
+read.delim("your file name")
+```
+
+____________________
+
+## Data Type and Structure
 
 We have learn about checking some samples of the data. Now we will try to check the overall structure or content of the data. You can use the `glimpse()` function to do this. The function will return the type and the dimension (rows and columns) of the data, the data type of each column and some samples of contents of each column.
 
@@ -256,22 +297,31 @@ We have learn about checking some samples of the data. Now we will try to check 
 glimpse(covid_news)
 ```
 
-The `covid_news` is a 'data.frame' or a table with 7857 rows and 6 columns. The name of each column can be seen on the left side (authors, title, etc.). The `chr` text means that the column has the data type of character, followed by the content of the column.
+The `covid_news` is a 'data.frame' or a table with 7857 rows and 6 columns. The name of each column can be seen on the left side (authors, title, etc.). The `chr` text means that the column has the data type of character, followed by the content of the column. `data.frame` is the most common and familiar structure of data. It is just your typical daily table data with each column represent single variable or specific information.
 
-### [OPTIONAL] Data Type in R
+### Data Type in R
+
+**Data Type in R**
 
 For simple introduction, below is the general data type in R.
-
-```{r echo=FALSE}
-knitr::include_graphics("assets/level_data.png")
-```
 
 * Character
 
 Character is the most common data type and indicated by the quotation mark ("").
 
+Whenever we use `<-` it means that we create a new variable or object. The `c()` indicate that there is more than one name or data that we want to save.
+
 ```{r}
-c("Arga", "David", "Anthony")
+nama <- c("Arga", "David", "Anthony")
+
+nama
+```
+
+You can check the structure or type of the data using `class()` function.
+
+```{r}
+# Check type of data
+class(nama)
 ```
 
 * Numeric
@@ -279,15 +329,29 @@ c("Arga", "David", "Anthony")
 Numeric is where you store any numerical value, both integers and decimals. Numeric data can be applied with arithmatical function such as addition, substraction and other mathematical function.
 
 ```{r}
-c(1:5, 20, 15, 10.5, 1.3)
+score <- c(1:10, 20, 15, 17.5, 1.3)
+
+score
+```
+
+```{r}
+# Check type of data
+class(score)
 ```
 
 * Integer
 
-Integer is where you store integer values. Integer data can also be applied with arithmatical function such as addition, substraction and other mathematical function.
+Integer is where you store integer values. Integer data can also be applied with arithmatical function such as addition, substraction and other mathematical function. Integer is indicated by `L` letter behind the number when we create the variable. Integer and numeric can be used interchangeably but integer is often used when we want to communicate the data to other people. Integer is also used when we want more efficient memory.
 
 ```{r}
-c(1L, 45L, 22L)
+visit <- c(1L, 45L, 22L)
+
+visit
+```
+
+```{r}
+# Check type of data
+class(visit)
 ```
 
 * Logical
@@ -295,8 +359,58 @@ c(1L, 45L, 22L)
 Logical contain the logical values (True/False) only. The logical value in R can be written as full words (TRUE/FALSE) or as an abbreviation (T/F).
 
 ```{r}
-c(TRUE, FALSE, F, T)
+holiday <- c(TRUE, FALSE, F, T)
+
+holiday
 ```
+
+```{r}
+# Check type of data
+class(holiday)
+```
+
+**Implicit Coercion**
+
+When a data has different type, R will automatically convert the data type to the most common type following the hierarchy below.
+
+```{r echo=FALSE}
+knitr::include_graphics("assets/level_data.png")
+```
+
+The most common type of data according to the hierarchy is as follow:
+
+1. character
+
+2. numeric
+
+3. integer
+
+4. logical
+
+For example, if we have data type of character and numeric, R will convert them into character. If there is logical (T/F) and numeric, R will convert them into numeric.
+
+```{r}
+# R will convert this into character
+sample_1 <- c("123", 123)
+
+class(sample_1)
+```
+
+```{r}
+# R will convert this into numeric
+sample_2 <- c(12, TRUE, 4, FALSE)
+
+class(sample_2)
+```
+
+```{r}
+# R will convert this into character
+sample_3 <- c(1, "TRUE", 0, FALSE)
+
+class(sample_3)
+```
+
+For more complete explanation and deeper understanding of R programming you can learn from the book written by Hadley Wickham[^5]. 
 
 ### Date and Time
 
@@ -334,7 +448,7 @@ class(covid_news$publish_date)
 class(ymd(covid_news$publish_date))
 ```
 
-As we can see, even though the data appear the same, the type of data has been changed from character to Date.
+As we can see, even though the data appear the same, the type of data has been changed from `character` to `Date`.
 
 To properly change the value of a data, we can use `mutate()` function from the `dplyr` package. 
 
@@ -380,6 +494,7 @@ covid_news %>%
 
 There are 13 news that published before 2019. Judging from the title of the news, we can see that most of the news contains information about the other strain of Coronavirus, including the one that caused MERS (Middle East Respiratory Syndrome) and SARS (Severe Acute Respiratory Syndrome). We can eliminate this since our only concern is the new Covid-19.
 
+
 ______________________
 
 **DIVE DEEPER**
@@ -389,26 +504,26 @@ Create the following new columns:
 * publish_month : contain only the month of the publish_date
 * publish_day : contain only the name of the day of publish_date
 
-Try applying function to samples of the data before using mutate to our data. For example, here I use `quarter()` function to get the information about at what quarter of the year the news is published.
+Try applying function to samples of the data before using mutate to our data. For example, here I use `quarter()` function to get the information about at what quarter of the year the news is published. Look at the cheatsheet and try to select which function that will give you the information about month and day of the week from the `publish_date`.
 
 ```{r}
 head( quarter(covid_news$publish_date) )
 ```
-
 ```{r}
-# use function to sample data
+# Try to get the information of day and month from publish_date
 ```
-
 
 ```{r}
 # use function to the data with mutate
+
+# check data structure
+```
+
+```{r special, echo=FALSE}
 covid_news <- covid_news %>% 
   mutate(publish_month = month(publish_date, label = T),
          publish_day = wday(publish_date, label = T)
          )
-         
-# check data structure
-glimpse(covid_news)
 ```
 
 ______________________
@@ -416,6 +531,7 @@ ______________________
 For our analysis, we will only use news article that published at least in 2019. This can be achieved by using filter with publish_year >= 2019.
 
 ```{r}
+# Only use data from year 2019 and later
 covid_news <- covid_news %>% 
   filter(publish_year >= 2019)
 
@@ -424,7 +540,11 @@ glimpse(covid_news)
 
 ## Data Aggregation
 
-Before we proceed to do text analysis, we will do some practice to make you more familiar with data wrangling. Our goal in this part is to check the daily number of news related to Covid-19. What we gonna do is simply counting the number of articles at any given day.
+Before we proceed to do text analysis, we will do some practice to make you more familiar with data wrangling. 
+
+**Daily Number of News**
+
+Our goal in this part is to check the daily number of news related to Covid-19. What we gonna do is simply counting the number of articles at any given day.
 
 For a simple out, we can use `table()` to get the number of news at each date.
 
@@ -443,20 +563,96 @@ news_count <- covid_news %>%
 head(news_count, 10)
 ```
 
+We can use `arrange()` to sort the data based on one or more columns. By default, `arrange()` wil sort data by ascending (from small to large number or from A to Z if alphabet). 
+
+```{r}
+news_count %>% 
+  arrange(frequency)
+```
+
+To sort data as descending (from large to small number) to get the most published news in a day, we can add `desc()` inside `arrange()`. It is no surprise that news related to Covid-19 reach its peak during mid March since the virus has already become a pandemic at that time.
+
+```{r}
+news_count %>% 
+  arrange(desc(frequency))
+```
+
 To get the full picture of the data, we can visualize the data into a line chart instead of in table format. R has one of the most beautiful and flexible visualization library called `ggplot2`. You can get the full cheatsheet of the [library here](https://www.rstudio.org/links/data_visualization_cheat_sheet).
+
+_________________________________
+
+**Basic Data Visualization with `ggplot2`**
+
+To start building plot with `ggplot`, you can type `ggplot()`. This will create a blank drawing canvas.
+
+```{r}
+ggplot()
+```
+
+Next, you need to give information about the data that will be used for visualization, followed by the x-axis and y-axis (sometimes only x-axis). The important information about the plot is placed inside `aes()`, which means aesthetics. `aes()` will automatically find the name of the column inside the data. Some information that can be given inside aesthetics is as follows:
+
+* Position (x-axis and y-axis)
+* Color
+* Shape
+* Size
+* Alpha (transparency)
+
+This will give us the information of the x-axis and y-axis and the title of the axis. Since the x-axis is a `Date`, the plot automatically create chronological timeline.
 
 ```{r}
 ggplot(data = news_count, 
        aes(x = publish_date, # x axis is the publish date
            y = frequency # y axis is the frequency
-           ) 
-       ) +
-  geom_line() + # making line chart
+           )
+       )
+```
+
+Next we just need to add the graph or plot inside the drawing area. You can insert many type of plot, which you can see via the `ggplot2` cheatsheet. The type of plot in `ggplot2` always start with the name `geom_`. For example, if you want insert each data as a single dot/point, you can use scatter plot, which is translated into `geom_point` because it will draw point.
+
+```{r}
+ggplot(data = news_count, aes(x = publish_date, y = frequency)) +
+  geom_point() # create scatter plot
+```
+
+Since our data is a chronological data that has continuation between time, we may prefer to use line chart instead of scatterplot. We simply just switch the `geom_poin` with `geom_line` because we want to draw a line.
+
+```{r}
+ggplot(data = news_count, aes(x = publish_date, y = frequency)) +
+  geom_line() # making line chart
+```
+
+We can also combine two different plot into a single graphic. For example, first we want to draw the scatter plot and followed by drawing the line. 
+
+```{r}
+ggplot(data = news_count, aes(x = publish_date, y = frequency)) +
+  geom_point() + # first layer
+  geom_line() # second layer
+```
+
+The next step is to create proper plot title, axis title and small caption for our plot using `labs()`.
+
+```{r}
+ggplot(data = news_count, aes(x = publish_date, y = frequency)) +
+  geom_point() + 
+  geom_line() +
   labs(title = "Daily Number of Covid-19 News", # Title of the plot
        x = "Publish Date", # title of x axis
        y = "Frequency", # title of y axis
        caption = "Source: CBC News"
-       ) + 
+       )
+```
+
+Finally, to make the plot better, we can use additional setting such as changing the color of the background and other trivial setting using `theme()`. There are several template theme that we can use, with the simplest and elegant theme is the `theme_minimal()`.
+
+```{r}
+ggplot(data = news_count, aes(x = publish_date, y = frequency)) +
+  geom_point() + 
+  geom_line() +
+  labs(title = "Daily Number of Covid-19 News", 
+       x = "Publish Date", 
+       y = "Frequency", 
+       caption = 
+       ) +
   theme_minimal() # final touch
 ```
 
@@ -466,36 +662,22 @@ ________________________________
 
 **DIVE DEEPER**
 
-Try to visualize the number of news on each day (publish_day). First, you need to create an object called day_count that store information of number of news on each day of the week.
+Try to visualize the number of news on each day (publish_day). First, you need to create an object called `day_count` that store information of number of news on each day (`publish_day`) of the week.
 
 ```{r}
-day_count <- covid_news %>% 
-  count(publish_day, 
-        name = "frequency" 
-        )
+# Get frequency of news on each publish day
 
 # use head() to check the content of the data
-head(day_count, 10)
 ```
 
-Now you can create the plot to visualize the data. Instead of using line chart, try use bar chart by change the `geom_line()` with another function that can create a bar chart with ggplot2, which you can look for in the cheatsheet. You can also change the title of the axis and the plot to better represent the data.
+Now you can create the plot to visualize the data. Instead of using line chart, try use bar chart by changings the `geom_line()` with another function that can create a bar chart with ggplot2, which you can look for in the cheatsheet. You can also change the title of the axis and the plot to better represent the data.
 
 ```{r}
-ggplot(data = day_count, 
-       aes(x = publish_day, 
-           y = frequency 
-           ) 
-       ) +
-  geom_col(fill = "firebrick") +
-  labs(title = "Number of Covid-19 News by Day", 
-       x = "Publish Day", 
-       y = "Frequency", 
-       caption = "Source: CBC News"
-       ) + 
-  theme_minimal() 
+# Create Data Visualization
 ```
 
 ________________________________
+
 
 # Text Mining
 
@@ -509,13 +691,13 @@ Text mining, also referred to as text data mining, similar to text analytics, is
 
 Topic Modeling is one of the most promising method to help us gain insight regarding the context or hidden topic inside the corpus.
 
-There are many package to do text mining, such as `tm`, `quanteda`, and `tidytext`. For this course, we will only use the `tidytext` due to its interpretability and easier to write. If you are interested in learning more about `tidytext`, you can visit the wonderful book written by Julia Silge[^5].
+There are many package to do text mining, such as `tm`, `quanteda`, and `tidytext`. For this course, we will only use the `tidytext` due to its interpretability and easier to write. If you are interested in learning more about `tidytext`, you can visit the wonderful book written by Julia Silge[^6].
 
-For this lesson, we will only use the news published in December, January and February to reduce the size and computation time. 
+For this lesson, we will only use the news published in December, January and February to reduce the size and computation time. THe `%in%` means that we want to get `publish_month` that has the value of either `Dec`, `Jan`, or `Feb`.
 
 ```{r}
 covid_news <- covid_news %>% 
-  filter(publish_month %in% c("Dec", "Jan", "Feb"))
+  filter(publish_month %in% c("Dec", "Jan", "Feb")) # Only select news from December to February
 
 dim(covid_news)
 ```
@@ -622,11 +804,11 @@ lexicon::key_contractions %>%
 If you want an advanced text cleansing for Indonesia, you can create your own contraction table or look for internet. A slang dictionary of Indonesian word is available [here](https://github.com/nasalsabila/kamus-alay).
 
 ```{r}
-read.csv("https://raw.githubusercontent.com/nasalsabila/kamus-alay/master/colloquial-indonesian-lexicon.csv") %>% 
+read.csv("data/colloquial-indonesian-lexicon.csv") %>% 
   head(10)
 ```
 
-### Removing Hashtag (#rstats) and URL
+### Removing Hashtag and URL
 
 For the most part, hashtag is not important for text analysis. We can remove the hash mark (#) and the subsequent word by using the `replace_hash()` and removing any url with `replace_url()` function from `textclean` package. You can also replace a hashtag or url with a certain character, such as space " " by adding `replacement = " "` inside the `replace_hash()` function.
 
@@ -649,7 +831,7 @@ text_sample %>%
   replace_hash()
 ```
 
-### Removing mention (@algoritma)
+### Removing Mention
 
 Allmost all Social Media use mention name embedded into the text such as twitter. We need to remove the mention name since they are not important. Removing mention is also need to be done before remove the punctuation mark since we will not be able to identify a mention if the "@" mark is gone. 
 
@@ -670,7 +852,7 @@ text_sample %>%
 
 I will describe what a regular expression and what a pattern means. A pattern is used to detect or search specific character inside a text. 
 
-However, for more complex pattern, we cannot simply use a character. We need something called regular expression, which is some sort of encoded pattern that will help us identify certain pattern in text. Some simple regex pattern can be seen [here](https://www.petefreitag.com/cheatsheets/regex/character-classes/), including the punctuation mark.
+However, for more complex pattern, we cannot simply use a character. We need something called regular expression, which is some sort of encoded pattern that will help us identify certain pattern in text. Some simple regex pattern can be seen [here](https://www.petefreitag.com/cheatsheets/regex/character-classes/), including the punctuation mark. More complete resource of regex in R can be seen from our simple learning module[^6].
 
 ```{r}
 # Remove all alphabets
@@ -765,10 +947,10 @@ clean_covid <- covid_news %>%
 
 Let's check and compare the result. 
 
-```{r eval=FALSE}
+```{r}
 clean_covid %>% 
   select(text, text_clean) %>% # only select text and text_clean column
-  head(10)
+  head(1)
 ```
 
 ### Filter Word Length
@@ -869,7 +1051,7 @@ _________________________
 If you are analyzing Indonesian text, you can use the stop words provided in other resource such as [this github repository](https://github.com/stopwords-iso/stopwords-id) instead of creating data from scratch.
 
 ```{r}
-read.delim("https://raw.githubusercontent.com/stopwords-iso/stopwords-id/master/stopwords-id.txt", header = F) %>% 
+read.delim("data/stopwords-id.txt", header = F) %>% 
   head(10)
 ```
 
@@ -881,7 +1063,7 @@ For grammatical reasons, documents are going to use different forms of a word, s
 
 The goal of both stemming and lemmatization is to reduce inflectional forms and sometimes derivationally related forms of a word to a common base form. Stemming usually refers to a crude heuristic process that chops off the ends of words in the hope of achieving this goal correctly most of the time, and often includes the removal of derivational affixes. Lemmatization usually refers to doing things properly with the use of a vocabulary and morphological analysis of words, normally aiming to remove inflectional endings only and to return the base or dictionary form of a word, which is known as the lemma.
 
-One of the most famous stemming algorithm is Porter's algorithm[^6], which have several rules that will stem a word into its basic form. Since the algoithm only consists of crude rules, some words may lost its form, such as the word "coronavirus" become "coronaviru".
+One of the most famous stemming algorithm is Porter's algorithm[^8], which have several rules that will stem a word into its basic form. Since the algoithm only consists of crude rules, some words may lost its form, such as the word "coronavirus" become "coronaviru".
 
 ```{r}
 wordStem("walking")
@@ -1112,12 +1294,12 @@ dim(topic_dtm)
 
 ## Latent Dirichlet Allocation (LDA)
 
-The popular algorithm for Topic Modeling is Latent Dirichlet Allocation (LDA), which is developed by Blei et al.[^7]. The mathematics behind LDA is too complicated to be explained here and will require a separate discussion. You can read the original paper if you are interested in them. However, this algorithm can be understood in this two simple properties:
+The popular algorithm for Topic Modeling is Latent Dirichlet Allocation (LDA), which is developed by Blei et al.[^8]. The mathematics behind LDA is too complicated to be explained here and will require a separate discussion. You can read the original paper if you are interested in them. However, this algorithm can be understood in this two simple properties:
 
 * **Every document is a mixture of topics**. We imagine that each document may contain words from several topics in particular proportions. For example, in a two-topic model we could say “Document 1 is 90% topic A and 10% topic B, while Document 2 is 30% topic A and 70% topic B.”
 * **Every topic is a mixture of words**. For example, we could imagine a two-topic model of American news, with one topic for “politics” and one for “entertainment.” The most common words in the politics topic might be “President”, “Congress”, and “government”, while the entertainment topic may be made up of words such as “movies”, “television”, and “actor”. Importantly, words can be shared between topics; a word like “budget” might appear in both equally.
 
-Illustration from Blei et al.[^8] will help us understand more about LDA. For example, we have a single document titled "Seeking Life's Bare (Genetic) Necessities" which mainly talk about genetics. However, we can expect other topic of discussion as well, such as about brain and nerve system and about computers that analyze the biological data. The figure illustrate the 4 topics from the document with its respective top 3 words. This is an illustration of every document is a mixture of topics, with 4 topics defined from the document. From each topic, we get a mixture of words and there will be some words that strongly related to certain topics. For example, the word "gene" and "dna" related to the first topic better than other words and the words "data" and "computer" related to the fourth topic better. Combining these two principles, LDA will find the hidden context/topic inside our data that can be easily interpreted by human.
+Illustration from Blei et al.[^9] will help us understand more about LDA. For example, we have a single document titled "Seeking Life's Bare (Genetic) Necessities" which mainly talk about genetics. However, we can expect other topic of discussion as well, such as about brain and nerve system and about computers that analyze the biological data. The figure illustrate the 4 topics from the document with its respective top 3 words. This is an illustration of every document is a mixture of topics, with 4 topics defined from the document. From each topic, we get a mixture of words and there will be some words that strongly related to certain topics. For example, the word "gene" and "dna" related to the first topic better than other words and the words "data" and "computer" related to the fourth topic better. Combining these two principles, LDA will find the hidden context/topic inside our data that can be easily interpreted by human.
 
 ```{r echo=FALSE}
 knitr::include_graphics("assets/topic_model.png")
@@ -1170,24 +1352,25 @@ lda_news <- FitLdaModel(dtm = topic_dtm,
                         k = 8, # Number of Topics
                         iterations = 1000, # sampling iterations
                         )
-beepr::beep(8)
 ```
 
 ```{r}
 lda_news <- readRDS("lda_news.Rds")
 ```
 
-LDA will return several output for us. Below are some important attribute acquired from the LDA Model:
+LDA will return several output for us. 
+
+```{r}
+names(lda_news)
+```
+
+Below are some important attribute acquired from the LDA Model:
 
 * **phi** : Posterior probability of per-topic-per-word probabilities
 * **theta** : Posterior probability of per-document-per-topic probabilities
 * **alpha** : Prior probabilty of per-document-per-topic probabilities
 * **beta** : Prior probability of per-document-per-topic probabilities
 * **coherence** : The probabilistic coherence of each topic (measure of topic quality)
-
-```{r}
-names(lda_news)
-```
 
 If a term has a high value of phi, it has a high probability of that term being generated from that topic. This also indicates that the term has a high association toward a certain topic. Let's look at the sample of probability of the first 6 words belong to each topic.
 
@@ -1358,7 +1541,7 @@ We can use the mean of the coherence score to measure the topic quality.
 mean(lda_news$coherence)
 ```
 
-We will try to find the optimal number of topics by finding the average probabilistic coherence for several number of topics, ranging from k = 5 and k = 10 to k = 100 with interval of 10. To speed up the computation, we will only use 500 sampling iterations for the sake of illustration since higher number of iterations can run for hours.
+We will try to find the optimal number of topics by finding the average probabilistic coherence for several number of topics, ranging from k = 5 and k = 10 to k = 100 with interval of 10. To speed up the computation, we will only use 1000 sampling iterations for the sake of illustration since higher number of iterations can run for hours.
 
 ```{r}
 k_list <- c(5, seq(10, 100, by = 10))
@@ -1401,11 +1584,11 @@ iter_k %>%
    theme(panel.grid.minor = element_blank())
 ```
 
-The optimal number of topics can be chosen by picking the number of topics that give the highest average coherence. There are also other methods to evaluate the topic model. It will be too much to discuss them on this article. You can visit Julia Silge blogpost[^9] to see some of the evaluation metrics.
+The optimal number of topics can be chosen by picking the number of topics that give the highest average coherence. There are also other methods to evaluate the topic model. It will be too much to discuss them on this article. You can visit Julia Silge blogpost[^11] to see some of the evaluation metrics.
 
 ### Extrinsic Measures
 
-Model performance toward a specific task, such as text classification. If the topics is regarded as a feature for classification model, we can use accuracy or any other classification metrics to check if the topic model is good enough to do the job. You can check the bottom part of my other article[^10] to see how LDA can be used for dimensionality reduction for text classification if you have learned about machine learning. 
+Model performance toward a specific task, such as text classification. If the topics is regarded as a feature for classification model, we can use accuracy or any other classification metrics to check if the topic model is good enough to do the job. You can check the bottom part of my other article[^12] to see how LDA can be used for dimensionality reduction for text classification if you have learned about machine learning. 
 
 # Reference
 
@@ -1413,9 +1596,11 @@ Model performance toward a specific task, such as text classification. If the to
 [^2]: [An Overview of Topic Modeling and Its Current Applications in Bioinformatics](https://springerplus.springeropen.com/articles/10.1186/s40064-016-3252-8)
 [^3]: [Applications for Topic Models: Text and Beyond](http://nips2009.topicmodels.net/accepted-papers)
 [^4]: [Top Analytics, Data Science, Machine Learning Software](https://www.kdnuggets.com/2019/05/poll-top-data-science-machine-learning-platforms.html)
-[^5]: [Text Mining with R](https://www.tidytextmining.com/)
-[^6]: [The Porter Stemming Algorithm](https://tartarus.org/martin/PorterStemmer/)
-[^7]: [Latent Dirichlet Allocation](http://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf)
-[^8]: [Surveying A Suite of Algorithms that Offer a Solution to Managing Large Document Archives](http://www.cs.columbia.edu/~blei/papers/Blei2012.pdf)
-[^9]: [Training, Evaluating, and Interpreting Topic Models](https://juliasilge.com/blog/evaluating-stm/)
-[^10]: [Topic Modeling with Latent Dirichlet Allocation (LDA)](https://algotech.netlify.app/blog/topic-modeling-lda/)
+[^5]: [R for Data Science](https://r4ds.had.co.nz/)
+[^6]: [Text Mining with R](https://www.tidytextmining.com/)
+[^7]: [Wrangling with Text-based Data](https://tiaradwptr.shinyapps.io/regex-in-r/)
+[^8]: [The Porter Stemming Algorithm](https://tartarus.org/martin/PorterStemmer/)
+[^9]: [Latent Dirichlet Allocation](http://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf)
+[^10]: [Surveying A Suite of Algorithms that Offer a Solution to Managing Large Document Archives](http://www.cs.columbia.edu/~blei/papers/Blei2012.pdf)
+[^11]: [Training, Evaluating, and Interpreting Topic Models](https://juliasilge.com/blog/evaluating-stm/)
+[^12]: [Topic Modeling with Latent Dirichlet Allocation (LDA)](https://algotech.netlify.app/blog/topic-modeling-lda/)
